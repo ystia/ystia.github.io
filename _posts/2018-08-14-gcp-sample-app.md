@@ -201,8 +201,8 @@ By default, this will configure the use of a CentOS 7 image for Compute Instance
   * the content of the public key to configure on this Compute instance
   * the path to private key (accessible from the orchestrator container with the right owner and permissions as set above) used by the orchestrator to ssh on this Compute Instance :
 ```
-PUBLIC_KEY_CONTENT=`cat $HOME/yorcdir/yorckey.pub`
-./create_on_demand_google_compute \
+$ PUBLIC_KEY_CONTENT=`cat $HOME/yorcdir/yorckey.pub`
+$ ./create_on_demand_google_compute \
     --zone europe-west1-b \
     --public-key "$PUBLIC_KEY_CONTENT" \
 	--private-key-file /etc/yorc/yorckey
