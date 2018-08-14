@@ -26,6 +26,8 @@ Once done, you can start installing the setup as described in the following sect
     * [Prerequisites on Google Cloud Platform](#prereqGCP)
     * [Import types and templates definitions](#imports)
     * [Create the application](#createApp)
+        * [Using Alien4Cloud UI](#createAppUI)
+        * [Using Alien4Cloud REST API](#createAppREST)
 
 # Start Alien4Cloud <a name="startA4C"></a>
 
@@ -134,12 +136,12 @@ through the environment variables `YORC_INFRA_GOOGLE_PROJECT` and `YORC_INFRA_GO
 So the orchestrator can be run using this command :
 ```
 $ docker run -d \
-	  -e YORC_INFRA_GOOGLE_PROJECT=my-gcloud-project1 \
-	  -e YORC_INFRA_GOOGLE_APPLICATION_CREDENTIALS=/etc/yorc/gcloudkeys.json \
+    -e YORC_INFRA_GOOGLE_PROJECT=my-gcloud-project1 \
+    -e YORC_INFRA_GOOGLE_APPLICATION_CREDENTIALS=/etc/yorc/gcloudkeys.json \
     -v $HOME/yorcdir:/etc/yorc \
     -p 8800:8800 \
-	  --name yorc \
-	  ystia/yorc
+    --name yorc \
+    ystia/yorc
 ```
 
 Logs can be seen running this command :
@@ -307,7 +309,91 @@ This will import types and a template definition (called Topology template) name
 ## Create the application <a name="createApp"></a>
 
 Now that the Topology template `VisionTopology` has been uploaded in Alien4Cloud
-catalog, an application we will name `ImageDetection` can be created from this template :
+catalog, an application we will name `ImageDetection` can be created from this template.
+
+Up until now, we were executing scripts making use of the Alien4Cloud REST API to
+perform operations.
+
+To create the application, we will see both ways of creating the application :
+  * using Alien4Cloud UI
+  * or using Alien4Cloud REST API
+  
+### Create the application using Alien4Cloud UI <a name="createAppUI"></a>
+
+Open a web brower on `http://localhost:8088` and login as admin/admin.
+
+This page appears :
+
+![A4C Login]({{ site.baseurl }}/assets/images/a4cLogin.PNG)
+
+Select `Applications` in the upper left corner, this page appears :
+
+![Applications]({{ site.baseurl }}/assets/images/applications.PNG)
+
+Click on `New Application`, a window pops up where you can specify :
+  * the name of the new application to create, here `ImageDetection`
+  * Initialize the topology from a Topology Template
+  * and select the topology template `VisionTopology` that was imported above.
+
+![New Application]({{ site.baseurl }}/assets/images/newApplication.PNG)
+
+Click on `Create`, the following page appears, where you can see the application
+created :
+
+![Application created]({{ site.baseurl }}/assets/images/applicationCreated.PNG)
+
+Click on the environment (area surrounded by a green rectangle above), and the
+following page appears:
+
+![Selected application]({{ site.baseurl }}/assets/images/selectedApplication.PNG)
+
+Select the `Topology` tab to check the application topology :
+
+![Selected application]({{ site.baseurl }}/assets/images/topology.PNG)
+
+We can see above that it consists in a Compute Node `ComputeInstance` that will
+be created on demand, and an application `ImageDetection` that will be deployed
+on this Compute Node.
+
+Select the `Inputs` tab, the following page appears where you need to provide your
+inputs for the application :
+
+![Application Inputs]({{ site.baseurl }}/assets/images/inputs.PNG)
+
+Select the `Locations` tab, and select the Google Location like below :
+
+![Google Location]({{ site.baseurl }}/assets/images/locations.PNG)
+
+Once done, select the `Review & deploy` tab, the following page appears :
+
+![Review and deploy]({{ site.baseurl }}/assets/images/review.PNG)
+
+Click on `Deploy`, the following page showing the deployment in progress appears:
+
+![Deployment progress]({{ site.baseurl }}/assets/images/deploymentInProgress.PNG)
+
+You can click on the `Runtime view` on the left-hand side to see the current status
+of components deployment from their color. Here the `ComputeInstance` component is up and running,
+while the `ImageDetection` application is being installed:
+
+![Runtime view]({{ site.baseurl }}/assets/images/runtimeview.PNG)
+
+Clicking on `Info` on the left-hand side, we go back to the previous page, that
+will show the status `Deployed` when the application will be deployed, like below :
+
+![Runtime view]({{ site.baseurl }}/assets/images/deployed.PNG)
+
+
+### Create the application using Alien4Cloud REST API <a name="createAppREST"></a>
+
+Instead of using the Alien4Cloud UI to deploy an application like what we did in
+the previous section, the REST API can also be used to deploy applications.
+
+The following scripts will perform the same actions of creating, configuring and 
+deploying an application, suing the REST API instead of the UI.
+
+First, create the application:
+
 ```
 $ ./create_application --name ImageDetection \
     --template VisionTopology --version 0.1.0
