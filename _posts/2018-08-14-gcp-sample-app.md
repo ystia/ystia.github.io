@@ -4,7 +4,7 @@ tags: ['index', 'Google Cloud']
 ---
 
 
-This post described how to use [Alien4Cloud](http://alien4cloud.github.io/) and 
+This post describes how to use [Alien4Cloud](http://alien4cloud.github.io/) and 
 the [Ystia Orchestrator](https://github.com/ystia/yorc/) to deploy on Google Cloud
 a [sample application detecting faces and text in an image](https://github.com/ystia/yorc-a4c-plugin/tree/develop/tosca-samples/org/ystia/yorc/samples/vision), using Google Cloud Vision API.
 
