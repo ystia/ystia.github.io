@@ -47,7 +47,7 @@ This proxy setting can be defined in Alien4Cloud through the environment variabl
 ```
 $ docker run -d --name a4c \
     -p 8088:8088 \
-    -e JAVA_EXT_OPTIONS="-Dhttp.proxyHost=10.1.2.3 -Dhttp.proxyPort=8080 -Dhttp.nonProxyHosts=\"127.0.0.1|10.11.12.13|10.20.*\"" \
+    -e JAVA_EXT_OPTIONS="-Dhttp.proxyHost=10.1.2.3 -Dhttp.proxyPort=8080 -Dhttps.proxyHost=10.1.2.3 -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=\"127.0.0.1|10.11.12.13|10.20.*\"" \
     laurentg/docker-alien4cloud
 ```
 
