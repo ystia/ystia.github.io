@@ -340,7 +340,7 @@ need to provide the following inputs:
   * Branch: `develop`
   * Archive(s) to import : `tosca-samples/org/ystia/yorc/samples/vision`
 
-Then click on `+` to add this branch/archive, to have finally this definition (no need to change credentials inputs):
+Then click on `+` to add this branch/archive, to have finally this definition (no need to define credentials here):
 
 ![Git Location]({{ site.baseurl }}/assets/images/gitLocation.PNG)
 
