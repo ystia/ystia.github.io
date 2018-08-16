@@ -24,10 +24,13 @@ Once done, you can start installing the setup as described in the following sect
   * [Configure Alien4Cloud to use the orchestrator](#configureA4C)
   * [Deploy the application](#deployApp)
     * [Prerequisites on Google Cloud Platform](#prereqGCP)
-    * [Import types and templates definitions](#imports)
-    * [Create the application](#createApp)
-        * [Using Alien4Cloud UI](#createAppUI)
-        * [Using Alien4Cloud REST API](#createAppREST)
+    * [Create and deploy the application using Alien4Cloud UI](#createDeployAppUI)
+      * [Import types and templates definitions](#importUI)
+      * [Create the application](#createAppUI)
+    * [Create and deploy the application using Alien4Cloud REST API](#createDeployAppREST)
+      * [Import types and templates definitions](#importREST)
+      * [Create the application](#createAppREST)
+  * [Use the application](#UseApp)
 
 # Start Alien4Cloud <a name="startA4C"></a>
 
@@ -56,7 +59,7 @@ Once the log below appear :
 ```
 INFO  Bootstrap:57 - Started Bootstrap in 46.171 seconds (JVM running for 47.79)
 ```
-Alien4Cloud is ready, and you can login at [http://localhost:8088](http://localhost:8088)
+Alien4Cloud is ready. You can login at [http://localhost:8088](http://localhost:8088)
 as admin/admin.
 
 
@@ -72,7 +75,7 @@ Before starting the orchestrator, the following preliminary steps need to be per
 The orchestrator will need a ssh private key that will be used to ssh on Virtual Machines created on demand.
 
 Generate private/public keys in a directory `$HOME/yorcdir` that will be later mounted on the 
-orchestrator docker container, running :
+orchestrator docker container, running (to keep the configuration simple, don't enter a passphrase here, even if it is supported) :
 ```
 $ mkdir $HOME/yorcdir
 $ ssh-keygen ed25519 -f $HOME/yorcdir/yorckey
@@ -173,8 +176,9 @@ actions need to be performed in Alien4Cloud :
   * Create and configure on an on-demand compute resource.
 
 This can be done using Alien4Cloud UI or REST API.
-Scripts are available in the Ystia Alien4Cloud Orchestrator plugin repository for each step.
-Get these scripts running :
+Scripts are available in the Ystia Alien4Cloud Orchestrator plugin repository for each step, for simplicity.
+On the host where you installed docker and used `docker run` to start the 
+Alien4Cloud container, get these scripts running :
 ```
 $ git clone https://github.com/ystia/yorc-a4c-plugin.git
 $ cd yorc-a4c-plugin/alien4cloud-yorc-plugin/src/test/scripts/
@@ -184,7 +188,7 @@ $ chmod a+x *
 Upload the Ystia Orchestrator plugin running the following script.
 
 This will by default upload the Ystia Orchestrator plugin version 3.0.0 on Alien4Cloud at `http://localhost:8088`, see script usage using subcommand `--help` if you need 
-to use other values thant these default values:
+to use other values than these default values:
 ```
 $ ./upload_yorc_plugin
 Downloading the plugin...
@@ -203,7 +207,7 @@ Orchestrator created in Alien4Cloud
 Configure the orchestrator.
 
 You need to pass in argument the URL of the orchestrator, that will be accessed by Alien4Cloud. You cannot pass `http://localhost:8800` as the localhost within the docker container running Alien4Cloud is not the localhost of the Host running the orchestrator container.
-You should get your Host IP address running `ifconfig` for example.
+You should get your Host IP address running `ifconfig` for example (but you could use instead the IP address of the container running the orchestator, from this command: `docker exec yorc ip a`).
 
 If for example this host where you used the `docker run` command to run the orchestrator has the IP address `10.1.2.3`,
 the following command can be run to configure the orchestrator in Alien4Cloud :
@@ -288,9 +292,163 @@ $ gcloud beta pubsub subscriptions create my-vision-input-sub --topic=my-vision-
 
 Once this is done, you are ready to deploy the Application.
 
-It starts by first uploading required types and templates definitions in Alien4Cloud.
+Up until now, scripts making use of the Alien4Cloud REST API to were run to
+perform operations.
 
-## Import types and templates definitions <a name="imports"></a>
+Next sections describing how to create and deploy an application, will show both ways
+  * either using Alien4Cloud UI,
+  * or using Alien4Cloud REST API.
+
+Next section describes how to create and deploy the application using the UI.
+You can directly go to [next section](#createDeployAppREST) to create and deploy the application using scripts.
+
+## Create and deploy the application using Alien4Cloud UI <a name="createDeployAppUI"></a>
+
+We will start by first uploading required types and [topoloy template](http://alien4cloud.github.io/#/documentation/2.0.0/devops_guide/tosca_grammar/topology_template.html) (description of components making the application, and relationships between these components) in Alien4Cloud.
+
+### Import types and templates definitions <a name="importUI"></a>
+
+The [Alien4Cloud Ystia Orchestrator plugin git repository](https://github.com/ystia/yorc-a4c-plugin) provides types and template definitions for our application in directory `tosca-samples/org/ystia/yorc/samples/vision`.
+
+We will upload these elements in Alien4Cloud using the UI.
+
+Open a web brower on `http://localhost:8088` and login as admin/admin.
+
+This page appears :
+
+![A4C Login]({{ site.baseurl }}/assets/images/a4cLogin.PNG)
+
+Select tab `Catalog`. A page appears showing a list of components already present
+in the catalog, brought by Alien4Cloud and the Orchestrator :
+
+![Catalog Components]({{ site.baseurl }}/assets/images/catalogComponents.PNG)
+
+Click on tab `Manage Archives`. This page appears:
+
+![Manage Archives]({{ site.baseurl }}/assets/images/manageArchives.PNG)
+
+Its lists archives provided by Alien4Cloud and the Orchestrator. You can upload your zipped archives
+from here, or import a git repository as we'll do below.
+
+Click on `Git import`. The following page appears:
+
+![Git Import]({{ site.baseurl }}/assets/images/gitImport.PNG)
+
+Click on `Git location` to define a git location. A popup appears where you 
+need to provide the following inputs:
+  * Repository URL: `https://github.com/ystia/yorc-a4c-plugin.git`
+  * Branch: `develop`
+  * Archive(s) to import : `tosca-samples/org/ystia/yorc/samples/vision`
+
+Then click on `+` to add this branch/archive, to have finally this definition (no need to change credentials inputs):
+
+![Git Location]({{ site.baseurl }}/assets/images/gitLocation.PNG)
+
+Click on `Save`. The following git location appears in the Archives page :
+
+![Git archives]({{ site.baseurl }}/assets/images/gitLocationImport.PNG)
+
+Click on the operation `Import` to perform the import, it will take some time,
+and finally provide this result on the Archive page when the import is successfull :
+
+![Git archives]({{ site.baseurl }}/assets/images/importSuccess.PNG)
+
+Components and topology template needed fro the application are now uploaded
+in the Alien4Cloud catalog.
+
+Clicking on tab `Browse topologies`, you can see the topology template that
+was just imported :
+
+![Catalog Topologies]({{ site.baseurl }}/assets/images/catalogTopologies.PNG)
+
+Now that types and topology template `VisionTopology` (version 0.1.0) are 
+available in Alien4Cloud, we can create an application from this topology template.
+
+### Create the application <a name="createAppUI"></a>
+
+From Alien4Cloud home page at `http://localhost:8088` :
+
+![A4C Login]({{ site.baseurl }}/assets/images/a4cLogin.PNG)
+
+Select tab `Applications` in the upper left corner. This page appears :
+
+![Applications]({{ site.baseurl }}/assets/images/applications.PNG)
+
+Click on `New Application`. A window pops up where you can specify :
+  * the name of the new application to create, here `ImageDetection`
+  * Initialize the topology from a Topology Template
+  * and select the topology template `VisionTopology` that was imported above.
+
+![New Application]({{ site.baseurl }}/assets/images/newApplication.PNG)
+
+Click on `Create`. The following page appears, where you can see the application
+created :
+
+![Application created]({{ site.baseurl }}/assets/images/applicationCreated.PNG)
+
+Click on the environment (area surrounded by a green rectangle above). The
+following page appears:
+
+![Selected application]({{ site.baseurl }}/assets/images/selectedApplication.PNG)
+
+Select the `Topology` tab to check the application topology :
+
+![Selected application]({{ site.baseurl }}/assets/images/topology.PNG)
+
+We can see above that it consists in a Compute Node `ComputeInstance` that will
+be created on demand, and an application `ImageDetection` that will be deployed
+on this Compute Node.
+
+Select tab `Inputs`. The following page appears where you need to provide your
+inputs for the application :
+
+![Application Inputs]({{ site.baseurl }}/assets/images/inputs.PNG)
+
+Select tab `Locations`, and select the Google Location like below :
+
+![Google Location]({{ site.baseurl }}/assets/images/locations.PNG)
+
+Once done, select tab `Review & deploy`. The following page appears :
+
+![Review and deploy]({{ site.baseurl }}/assets/images/review.PNG)
+
+Click on `Deploy`. The following page showing the deployment in progress appears:
+
+![Deployment progress]({{ site.baseurl }}/assets/images/deploymentInProgress.PNG)
+
+You can click on the `Runtime view` on the left-hand side to see the current status
+of components deployment from their color. Here the `ComputeInstance` component is up and running,
+while the `ImageDetection` application is being installed:
+
+![Runtime view]({{ site.baseurl }}/assets/images/runtimeview.PNG)
+
+An Alien4Cloud premium version allows to see deployments logs from the UI.
+
+Here, the open source version does not provide this feature. But you can still use
+the orchestrator CLI to get deployment logs, running :
+```
+$ docker exec -ti yorc yorc d logs -b ImageDetection-Environment
+```
+
+Back to Alien4Cloud UI, clicking on `Info` on the left-hand side, we go back to the previous page, that will show the status `Deployed` when the application will be deployed, like below :
+
+![Runtime view]({{ site.baseurl }}/assets/images/deployed.PNG)
+
+The application is deployed now, it is listening to notifications of file
+uploaded in your input storage bucket.
+
+You can skip next section describing how to create the application through the 
+REST API, and go to last section on how to [use the application](#UseApp).
+
+## Create and deploy the application using Alien4Cloud REST API <a name="createDeployAppREST"></a>
+
+If you did not follow previous section to create the application from the UI,
+this section will allow you to create the application from scripts using the 
+REST API.
+
+We will start by first uploading required types and [topoloy template](http://alien4cloud.github.io/#/documentation/2.0.0/devops_guide/tosca_grammar/topology_template.html) (description of components making the application, and relationships between these components) in Alien4Cloud.
+
+### Import types and templates definitions <a name="importREST"></a>
 
 The [Alien4Cloud Ystia Orchestrator plugin git repository](https://github.com/ystia/yorc-a4c-plugin) provides types and template definitions for our application in directory `tosca-samples/org/ystia/yorc/samples/vision`.
 
@@ -306,91 +464,10 @@ Archive imported
 This will import types and a template definition (called Topology template) named
 `VisionTopology` (version 0.1.0) in the Alien4Cloud catalog.
 
-## Create the application <a name="createApp"></a>
+### Create the application<a name="createAppREST"></a>
 
-Now that the Topology template `VisionTopology` has been uploaded in Alien4Cloud
-catalog, an application we will name `ImageDetection` can be created from this template.
-
-Up until now, we were executing scripts making use of the Alien4Cloud REST API to
-perform operations.
-
-To create the application, we will see both ways of creating the application :
-  * using Alien4Cloud UI
-  * or using Alien4Cloud REST API
-  
-### Create the application using Alien4Cloud UI <a name="createAppUI"></a>
-
-Open a web brower on `http://localhost:8088` and login as admin/admin.
-
-This page appears :
-
-![A4C Login]({{ site.baseurl }}/assets/images/a4cLogin.PNG)
-
-Select `Applications` in the upper left corner, this page appears :
-
-![Applications]({{ site.baseurl }}/assets/images/applications.PNG)
-
-Click on `New Application`, a window pops up where you can specify :
-  * the name of the new application to create, here `ImageDetection`
-  * Initialize the topology from a Topology Template
-  * and select the topology template `VisionTopology` that was imported above.
-
-![New Application]({{ site.baseurl }}/assets/images/newApplication.PNG)
-
-Click on `Create`, the following page appears, where you can see the application
-created :
-
-![Application created]({{ site.baseurl }}/assets/images/applicationCreated.PNG)
-
-Click on the environment (area surrounded by a green rectangle above), and the
-following page appears:
-
-![Selected application]({{ site.baseurl }}/assets/images/selectedApplication.PNG)
-
-Select the `Topology` tab to check the application topology :
-
-![Selected application]({{ site.baseurl }}/assets/images/topology.PNG)
-
-We can see above that it consists in a Compute Node `ComputeInstance` that will
-be created on demand, and an application `ImageDetection` that will be deployed
-on this Compute Node.
-
-Select the `Inputs` tab, the following page appears where you need to provide your
-inputs for the application :
-
-![Application Inputs]({{ site.baseurl }}/assets/images/inputs.PNG)
-
-Select the `Locations` tab, and select the Google Location like below :
-
-![Google Location]({{ site.baseurl }}/assets/images/locations.PNG)
-
-Once done, select the `Review & deploy` tab, the following page appears :
-
-![Review and deploy]({{ site.baseurl }}/assets/images/review.PNG)
-
-Click on `Deploy`, the following page showing the deployment in progress appears:
-
-![Deployment progress]({{ site.baseurl }}/assets/images/deploymentInProgress.PNG)
-
-You can click on the `Runtime view` on the left-hand side to see the current status
-of components deployment from their color. Here the `ComputeInstance` component is up and running,
-while the `ImageDetection` application is being installed:
-
-![Runtime view]({{ site.baseurl }}/assets/images/runtimeview.PNG)
-
-Clicking on `Info` on the left-hand side, we go back to the previous page, that
-will show the status `Deployed` when the application will be deployed, like below :
-
-![Runtime view]({{ site.baseurl }}/assets/images/deployed.PNG)
-
-
-### Create the application using Alien4Cloud REST API <a name="createAppREST"></a>
-
-Instead of using the Alien4Cloud UI to deploy an application like what we did in
-the previous section, the REST API can also be used to deploy applications.
-
-The following scripts will perform the same actions of creating, configuring and 
-deploying an application, suing the REST API instead of the UI.
+The following scripts will perform the actions of creating, configuring and 
+deploying an application, using the REST API.
 
 First, create the application:
 
@@ -435,7 +512,12 @@ Application ImageDetection deployed
 ```
 
 The application is deployed now, it is listening to notifications of file
-uploaded in your input storage bucket. 
+uploaded in your input storage bucket.
+
+The application can now be used to detect faces and text in images that will
+be uploaded, as described in next section.
+
+# Use the application <a name="UseApp"></a>
 
 Upload an image containing faces or text in this input storage/bucket,
 either through the Google Cloud console, or using the `gsutil cp` CLI, and 30 
