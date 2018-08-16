@@ -9,14 +9,14 @@ permalink: /blog/
 
   <h2 class="alt-h2">Posts</h2>
 
-  <ul class="list-style-none">
+  <ul class="list-style-none blog-posts-list-ystia">
     {% for post in site.posts %}
       <li>
         <a class="alt-h3" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
         <span class="float-right ml-2">{{ post.date | date: "%b %d, %Y" }}</span>
         {% if post.tags.first == 'index' %}
           {% for tag in post.tags offset:1 %}
-            <span class="float-right Label bg-ystia mr-1">{{ tag }}</span>
+            <span class="float-right Label bg-ystia mt-3 mr-1">{{ tag }}</span>
           {% endfor %}
         {% endif %}
       </li>

@@ -33,5 +33,9 @@
   padding: 0rem !important;
 }
 
+.blog-posts-list-ystia {
+  line-height: 50px;
+}
+
 .bg-ystia {
   background-color:#400c7c !important}
