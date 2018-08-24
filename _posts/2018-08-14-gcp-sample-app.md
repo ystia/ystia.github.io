@@ -38,7 +38,7 @@ To perform a standard installation of Alien4Cloud, see [Alien4Cloud Getting star
 
 Here, we will rely on docker to run Alien4Cloud, using this command :
 ```
-$ docker run -d --name a4c -p 8088:8088 laurentg/docker-alien4cloud
+$ docker run -d --name a4c -p 8088:8088 alien4cloud/alien4cloud
 ```
 
 Or if you are using a HTTP proxy, this proxy needs to be known by Alien4Cloud for some operations like importing in Alien4cloud archives from an external web site.
@@ -48,7 +48,7 @@ This proxy setting can be defined in Alien4Cloud through the environment variabl
 $ docker run -d --name a4c \
     -p 8088:8088 \
     -e JAVA_EXT_OPTIONS="-Dhttp.proxyHost=10.1.2.3 -Dhttp.proxyPort=8080 -Dhttps.proxyHost=10.1.2.3 -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=\"127.0.0.1|10.11.12.13|10.20.*\"" \
-    laurentg/docker-alien4cloud
+    alien4cloud/alien4cloud
 ```
 
 Logs can be seen running this command :
