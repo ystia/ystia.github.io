@@ -1,5 +1,5 @@
 ---
-title:  "Deploying an image detection application on Google Cloud"
+title:  "Deploying a face detection application on Google Cloud"
 tags: ['index', 'Google Cloud']
 ---
 
