@@ -2,10 +2,18 @@ theme: jekyll-theme-cayman
 title: Ystia Suite
 description: Develop and deploy applications over hybrid infrastructures (IaaS, HPC schedulers, CaaS).
 github:
+  github_root_url: https://github.com
   yorc:
     repository_url: https://github.com/ystia/yorc
   forge:
     repository_url: https://github.com/ystia/forge
   a4c_plugin:
     repository_url: https://github.com/ystia/yorc-a4c-plugin
-
+ref:
+  bintray:
+    bintray_root_url: https://bintray.com/
+  artifactory:
+    artifactory_root_url: https://jfrog.com/artifactory/
+  travis:
+    travis_root_url: https://travis-ci.org
+    travis_logo: assets/images/travis-logo.png
