@@ -3,6 +3,11 @@ title: Ystia Suite
 description: Develop and deploy applications over hybrid infrastructures (IaaS, HPC schedulers, CaaS).
 baseurl: ""
 url: "https://ystia.github.io"
+
+# Markdown generator config
+kramdown:
+  parse_block_html: true
+
 github:
   github_root_url: https://github.com
   yorc:
