@@ -19,16 +19,34 @@
       <a href="/blog/" class="btn-ystia">Blog</a>
     </header>
 
-    <main id="content" class="main-content content-ystia" role="main">
+    <main id="content" class="main-content content-ystia pb-0" role="main">
       {{ content }}
 
-      <footer class="site-footer text-center">
-        <span class="site-footer-credits pr-4"><a href="/">Ystia Suite</a></span>
-        <span class="site-footer-credits pr-4"><a href="{{ site.github.yorc.repository_url }}">Orchestrator</a></span>
-        <span class="site-footer-credits pr-4"><a href="{{ site.github.forge.repository_url }}">Forge</a></span>
-        <span class="site-footer-credits"><a href="/blog/">Blog</a></span>
+      <footer class="site-footer text-center pb-0">
+        <span class="site-footer-credits pr-4 pb-0"><a href="/">Ystia Suite</a></span>
+        <span class="site-footer-credits pr-4 pb-0"><a href="{{ site.github.yorc.repository_url }}">Orchestrator</a></span>
+        <span class="site-footer-credits pr-4 pb-0"><a href="{{ site.github.forge.repository_url }}">Forge</a></span>
+        <span class="site-footer-credits pb-0"><a href="/blog/">Blog</a></span>
       </footer>
     </main>
+
+    <footer class="site-footer text-center pt-0">
+        <span class="site-footer-credits"><a href="{{ site.ref.bintray.bintray_root_url }}">
+          <img src="assets/images/Powered-by-bintray.png" class="img-border ml-6" alt="Bintray"/>
+        </a></span>
+        <span class="site-footer-credits"><a href="{{ site.ref.artifactory.artifactory_root_url }}">
+          <img src="assets/images/Powered-by-artifactory.png" class="img-border ml-6" alt="Artifactory"/>
+        </a></span>
+
+        <span class="site-footer-credits"><a href="{{ site.ref.travis.travis_root_url }}">
+          <img src="{{ site.ref.travis.travis_logo }}" class="img-border ml-6" height="35" width="100" alt="Travis CI"/>
+        </a></span>
+
+        <span class="site-footer-credits"><a href="{{ github_root_url }}">
+          <img src="assets/images/GitHub_Logo.png" class="img-border ml-6" height="35" width="100" alt="Travis CI"/>
+        </a></span>
+
+      </footer>
 
     {% if site.google_analytics %}
       <script>
