@@ -83,7 +83,7 @@ orchestrator docker container, running (to keep the configuration simple, don't 
 
 ```bash
 $ mkdir $HOME/yorcdir
-$ ssh-keygen ed25519 -f $HOME/yorcdir/yorckey
+$ ssh-keygen -t ed25519 -f $HOME/yorcdir/yorckey
 Generating public/private rsa key pair.
 Enter passphrase (empty for no passphrase):
 Enter same passphrase again:
